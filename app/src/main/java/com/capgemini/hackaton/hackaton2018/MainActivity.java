@@ -10,6 +10,9 @@ import com.capgemini.hackaton.hackaton2018.retrofit.DoorDTO;
 import com.capgemini.hackaton.hackaton2018.retrofit.DoorProfileDTO;
 import com.capgemini.hackaton.hackaton2018.retrofit.OpenDoorService;
 
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -65,4 +68,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 }
