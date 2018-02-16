@@ -25,6 +25,9 @@ import com.capgemini.hackaton.hackaton2018.fingerprint.FingerprintAuthentication
 import com.capgemini.hackaton.hackaton2018.retrofit.DoorDTO;
 import com.capgemini.hackaton.hackaton2018.retrofit.DoorProfileDTO;
 import com.capgemini.hackaton.hackaton2018.retrofit.OpenDoorService;
+import com.capgemini.hackaton.hackaton2018.retrofit.PlayMessageDTO;
+import com.capgemini.hackaton.hackaton2018.retrofit.PlayMessageResponseDTO;
+import com.capgemini.hackaton.hackaton2018.retrofit.PlayMessageService;
 import com.estimote.cloud_plugin.common.EstimoteCloudCredentials;
 import com.estimote.internal_plugins_api.cloud.proximity.ProximityAttachment;
 import com.estimote.proximity_sdk.proximity.ProximityObserver;
@@ -68,10 +71,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initRetrofitOpenDoor();
+        initRetrofitPlayMessage();
         ButterKnife.bind(this);
-
-        //Beacon
-        initiateProximitySDK();
 
         //Fingerprint
         fingerprintOnCreate();
@@ -81,6 +82,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         beaconOnStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initiateProximitySDK();
+    }
+
+    //Play Message
+    private PlayMessageService playMessageService;
+    private void initRetrofitPlayMessage() {
+        Retrofit retrofitDoor = new Retrofit.Builder()
+//                .baseUrl("http://192.168.101.109:3000/")
+                .baseUrl("http://192.168.101.152:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        playMessageService = retrofitDoor.create(PlayMessageService.class);
+    }
+
+    private void onPlayMessage(String beaconId){
+        Integer userId = 1;
+        Call<PlayMessageResponseDTO> call = playMessageService.open(new PlayMessageDTO(userId, beaconId));
+        call.enqueue(new Callback<PlayMessageResponseDTO>(){
+
+            @Override
+            public void onResponse(Call<PlayMessageResponseDTO> call, Response<PlayMessageResponseDTO> response) {
+                if(response.code() == 200) {
+                    Log.e(TAG, response.body().getMessages().get(1).getMessage());
+                    Toast.makeText(getApplicationContext(), "Message send", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e(TAG, Integer.toString(response.code()));
+                    Toast.makeText(getApplicationContext(), "Message failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlayMessageResponseDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Message failure", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //Beacon stuff
@@ -116,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
                     @Override public Unit invoke(ProximityAttachment proximityAttachment) {
                         Log.d(TAG,"withOnEnterAction: " + proximityAttachment.getPayload().get("room"));
+                        onPlayMessage(proximityAttachment.getDeviceId());
                         Toast.makeText(getApplicationContext(), "Entering " + proximityAttachment.getPayload().get("room"), Toast.LENGTH_SHORT).show();
 //                        Toast.makeText(getApplicationContext(), proximityAttachment.getPayload().get("message"), Toast.LENGTH_SHORT).show();
                         return null;
@@ -434,6 +476,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         openDoorService = retrofitDoor.create(OpenDoorService.class);
+
     }
 
     private void openDoor(){
