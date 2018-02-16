@@ -5,21 +5,21 @@ package com.capgemini.hackaton.hackaton2018.retrofit;
  */
 
 public class MessageDTO {
-    private Integer senderId;
+    private Integer receiverId;
     private String senderName;
 
     //Base64 encoded sound
     private String data;
 
     //Beacon id
-    private String destinationId;
+    private String beaconId;
 
-    public Integer getSenderId() {
-        return senderId;
+    public Integer getReceiverId() {
+        return receiverId;
     }
 
-    public void setSenderId(Integer senderId) {
-        this.senderId = senderId;
+    public void setReceiverId(Integer receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getSenderName() {
@@ -38,18 +38,18 @@ public class MessageDTO {
         this.data = data;
     }
 
-    public String getDestinationId() {
-        return destinationId;
+    public String getBeaconId() {
+        return beaconId;
     }
 
-    public void setDestinationId(String destinationId) {
-        this.destinationId = destinationId;
+    public void setBeaconId(String beaconId) {
+        this.beaconId = beaconId;
     }
 
-    public MessageDTO(Integer senderId, String senderName, String data, String destinationId) {
-        this.senderId = senderId;
+    public MessageDTO(Integer receiverId, String senderName, String data, String beaconId) {
+        this.receiverId = receiverId;
         this.senderName = senderName;
         this.data = data;
-        this.destinationId = destinationId;
+        this.beaconId = beaconId;
     }
 }
