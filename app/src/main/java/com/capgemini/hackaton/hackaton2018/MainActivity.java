@@ -77,4 +77,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @OnClick(R.id.recordButton)
+    public void record(){
+        System.out.println("Go to record activity");
+        Intent intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
+    }
 }
