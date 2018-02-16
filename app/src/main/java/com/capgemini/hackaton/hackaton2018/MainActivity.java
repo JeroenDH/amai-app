@@ -1,5 +1,6 @@
 package com.capgemini.hackaton.hackaton2018;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,11 @@ import com.capgemini.hackaton.hackaton2018.fingerprint.FingerprintAuthentication
 import com.capgemini.hackaton.hackaton2018.retrofit.DoorDTO;
 import com.capgemini.hackaton.hackaton2018.retrofit.DoorProfileDTO;
 import com.capgemini.hackaton.hackaton2018.retrofit.OpenDoorService;
+import com.estimote.cloud_plugin.common.EstimoteCloudCredentials;
+import com.estimote.internal_plugins_api.cloud.proximity.ProximityAttachment;
+import com.estimote.proximity_sdk.proximity.ProximityObserver;
+import com.estimote.proximity_sdk.proximity.ProximityObserverBuilder;
+import com.estimote.proximity_sdk.proximity.ProximityZone;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -33,6 +40,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -44,6 +52,8 @@ import javax.crypto.SecretKey;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,18 +63,157 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @TargetApi(23)
 public class MainActivity extends AppCompatActivity {
 
-    @Bind(R.id.openDoorButton) ImageButton openDoorButton;
-    @Bind(R.id.nestButton) ImageButton nestButton;
-
-    private OpenDoorService openDoorService;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initRetrofit();
+        initRetrofitOpenDoor();
         ButterKnife.bind(this);
 
+        //Beacon
+        initiateProximitySDK();
+
+        //Fingerprint
+        fingerprintOnCreate();
+     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        beaconOnStop();
+    }
+
+    //Beacon stuff
+    private ProximityZone roomZone;
+    private ProximityObserver proximityObserver;
+    private ProximityObserver.Handler observationHandler;
+
+    private void beaconOnStop(){
+        Toast.makeText(getApplicationContext(), "Stop detecting stuff and stuff..", Toast.LENGTH_SHORT).show();
+        observationHandler.stop();
+    }
+
+    public void initiateProximitySDK(){
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                999);
+
+        EstimoteCloudCredentials cloudCredentials = new EstimoteCloudCredentials("hackaton-amai-app-j1t","632dcf2e96dc83510aad823e32b8a34e");
+        this.proximityObserver = new ProximityObserverBuilder(getApplicationContext(), cloudCredentials)
+                .withBalancedPowerMode()
+                .withOnErrorAction(new Function1<Throwable, Unit>() {
+                    @Override
+                    public Unit invoke(Throwable throwable) {
+                        Log.e(TAG,"proximityObserver error");
+                        return null;
+                    }
+                })
+                .build();
+
+        this.roomZone = this.proximityObserver.zoneBuilder()
+                .forAttachmentKeyAndValue("enabled", "true")
+                .inNearRange()
+                .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
+                    @Override public Unit invoke(ProximityAttachment proximityAttachment) {
+                        Log.d(TAG,"withOnEnterAction: " + proximityAttachment.getPayload().get("room"));
+                        Toast.makeText(getApplicationContext(), "Entering " + proximityAttachment.getPayload().get("room"), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), proximityAttachment.getPayload().get("message"), Toast.LENGTH_SHORT).show();
+                        return null;
+                    }
+                })
+                .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
+                    @Override
+                    public Unit invoke(ProximityAttachment proximityAttachment) {
+                        Log.d(TAG,"withOnExitAction" + proximityAttachment.getPayload().get("room"));
+                        Toast.makeText(getApplicationContext(), "Leaving " + proximityAttachment.getPayload().get("room"), Toast.LENGTH_SHORT).show();
+                        return null;
+                    }
+                })
+                .withOnChangeAction(new Function1<List<? extends ProximityAttachment>, Unit>() {
+                    @Override
+                    public Unit invoke(List<? extends ProximityAttachment> proximityAttachments) {
+                        return null;
+                    }
+                })
+
+                .create();
+
+        observationHandler =
+                proximityObserver
+                        .addProximityZone(roomZone)
+                        .start();
+
+        Log.d(TAG,"Initialization ProximitySDK finished");
+        Toast.makeText(getApplicationContext(), "Initialization ProximitySDK finished", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    //Open additional apps
+    @OnClick(R.id.nestButton)
+    public void openNestApp(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.nest.android");
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + "com.nest.android"));
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.hueButton)
+    public void openHueApp(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.philips.lighting.hue");
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + "com.philips.lighting.hue"));
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.plexButton)
+    public void openPlexApp(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.plexapp.android");
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + "com.plexapp.android"));
+            startActivity(intent);
+        }
+    }
+
+
+
+    //Fingerprint
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final String DIALOG_FRAGMENT_TAG = "myFragment";
+    private static final String SECRET_MESSAGE = "Very secret message";
+    private static final String KEY_NAME_NOT_INVALIDATED = "key_not_invalidated";
+    public static final String DEFAULT_KEY_NAME = "default_key";
+
+    private KeyStore mKeyStore;
+    private KeyGenerator mKeyGenerator;
+    private SharedPreferences mSharedPreferences;
+
+
+    private void fingerprintOnCreate(){
         //Fingerprint
         try {
             mKeyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -120,102 +269,7 @@ public class MainActivity extends AppCompatActivity {
         openDoorButton.setEnabled(true);
         openDoorButton.setOnClickListener(
                 new OpenDoorButtonClickListener(defaultCipher, DEFAULT_KEY_NAME));
-
     }
-
-    private void initRetrofit() {
-        Retrofit retrofitDoor = new Retrofit.Builder()
-//                .baseUrl("http://192.168.101.109:3000/")
-                .baseUrl("http://192.168.101.152:3000/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        openDoorService = retrofitDoor.create(OpenDoorService.class);
-    }
-
-    @OnClick(R.id.nestButton)
-    public void openNestApp(){
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.nest.android");
-        if (intent != null) {
-            // We found the activity now start the activity
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            // Bring user to the market or let them choose an app?
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("market://details?id=" + "com.nest.android"));
-            startActivity(intent);
-        }
-    }
-
-    @OnClick(R.id.hueButton)
-    public void openHueApp(){
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.philips.lighting.hue");
-        if (intent != null) {
-            // We found the activity now start the activity
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            // Bring user to the market or let them choose an app?
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("market://details?id=" + "com.philips.lighting.hue"));
-            startActivity(intent);
-        }
-    }
-
-    @OnClick(R.id.plexButton)
-    public void openPlexApp(){
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.plexapp.android");
-        if (intent != null) {
-            // We found the activity now start the activity
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            // Bring user to the market or let them choose an app?
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("market://details?id=" + "com.plexapp.android"));
-            startActivity(intent);
-        }
-    }
-    
-//    @OnClick(R.id.openDoorButton)
-    private void openDoor(){
-        String username = "test";
-        String password = "test";
-        Call<DoorProfileDTO> call = openDoorService.open(new DoorDTO(username, password));
-        call.enqueue(new Callback<DoorProfileDTO>(){
-
-            @Override
-            public void onResponse(Call<DoorProfileDTO> call, Response<DoorProfileDTO> response) {
-                if(response.code() == 200) {
-                    Toast.makeText(getApplicationContext(), "Door is open!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Door isn't open!", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DoorProfileDTO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Door is unreachable!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-
-    //Fingerprint
-    private static final String TAG = MainActivity.class.getSimpleName();
-
-    private static final String DIALOG_FRAGMENT_TAG = "myFragment";
-    private static final String SECRET_MESSAGE = "Very secret message";
-    private static final String KEY_NAME_NOT_INVALIDATED = "key_not_invalidated";
-    public static final String DEFAULT_KEY_NAME = "default_key";
-
-    private KeyStore mKeyStore;
-    private KeyGenerator mKeyGenerator;
-    private SharedPreferences mSharedPreferences;
 
 //    @Bind(R.id.confirmation_message) TextView confirmationMessage;
 //    @Bind(R.id.encrypted_message) TextView encryptedMessage;
@@ -367,6 +421,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    //Open door
+    private OpenDoorService openDoorService;
+
+    @Bind(R.id.openDoorButton) ImageButton openDoorButton;
+
+    private void initRetrofitOpenDoor() {
+        Retrofit retrofitDoor = new Retrofit.Builder()
+//                .baseUrl("http://192.168.101.109:3000/")
+                .baseUrl("http://192.168.101.152:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        openDoorService = retrofitDoor.create(OpenDoorService.class);
+    }
+
+    private void openDoor(){
+        String username = "test";
+        String password = "test";
+        Call<DoorProfileDTO> call = openDoorService.open(new DoorDTO(username, password));
+        call.enqueue(new Callback<DoorProfileDTO>(){
+
+            @Override
+            public void onResponse(Call<DoorProfileDTO> call, Response<DoorProfileDTO> response) {
+                if(response.code() == 200) {
+                    Toast.makeText(getApplicationContext(), "Door is open!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Door isn't open!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DoorProfileDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Door is unreachable!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
 
     @OnClick(R.id.proximityButton)
