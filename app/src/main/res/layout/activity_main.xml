@@ -14,16 +14,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Hello World!!!!"
         android:id="@+id/textView" />
-
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="99dp"
-        android:id="@+id/openDoorButton"
-        />
 
     <TextView
         android:id="@+id/confirmation_message"
@@ -52,11 +44,40 @@
     <Button style="@android:style/Widget.Material.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="41dp"
         android:layout_gravity="end"
         android:textColor="?android:attr/textColorPrimaryInverse"
         android:text="@string/purchase"
         android:id="@+id/purchase_button"
-        android:layout_above="@+id/purchase_button_not_invalidated_description"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/textView"
+        android:layout_toEndOf="@+id/openDoorButton"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="49dp" />
+
+    <Button
+        android:id="@+id/proximityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/openDoorButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="This button is cooler" />
+
+    <Button
+        android:id="@+id/openDoorButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open Door"
+        android:layout_marginStart="14dp"
+        android:layout_above="@+id/recordButton"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/recordButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Record message"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/purchase_button"
+        android:layout_marginStart="66dp"
+        android:layout_marginBottom="158dp" />
 </RelativeLayout>

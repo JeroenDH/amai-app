@@ -1,9 +1,11 @@
 package com.capgemini.hackaton.hackaton2018;
 
+import android.annotation.TargetApi;
 import android.app.KeyguardManager;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.security.keystore.KeyGenParameterSpec;
@@ -49,9 +51,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+@TargetApi(23)
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.openDoorButton) Button openDoorButton;
+    @Bind(R.id.purchase_button) Button purchaseButton;
+
 
     private OpenDoorService openDoorService;
 
@@ -114,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         }
         createKey(DEFAULT_KEY_NAME, true);
         createKey(KEY_NAME_NOT_INVALIDATED, false);
-        Button purchaseButton = (Button) findViewById(R.id.purchase_button);
         purchaseButton.setEnabled(true);
         purchaseButton.setOnClickListener(
                 new OpenDoorButtonClickListener(defaultCipher, DEFAULT_KEY_NAME));
@@ -155,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     //Fingerprint
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -166,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
     private KeyStore mKeyStore;
     private KeyGenerator mKeyGenerator;
     private SharedPreferences mSharedPreferences;
+
+    @Bind(R.id.confirmation_message) TextView confirmationMessage;
+    @Bind(R.id.encrypted_message) TextView encryptedMessage;
 
     /**
      * Initialize the {@link Cipher} instance with the created key in the
@@ -262,11 +270,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Show confirmation, if fingerprint was used show crypto information.
     private void showConfirmation(byte[] encrypted) {
-        findViewById(R.id.confirmation_message).setVisibility(View.VISIBLE);
+        confirmationMessage.setVisibility(View.VISIBLE);
         if (encrypted != null) {
-            TextView v = (TextView) findViewById(R.id.encrypted_message);
-            v.setVisibility(View.VISIBLE);
-            v.setText(Base64.encodeToString(encrypted, 0 /* flags */));
+            encryptedMessage.setVisibility(View.VISIBLE);
+            encryptedMessage.setText(Base64.encodeToString(encrypted, 0 /* flags */));
         }
     }
 
@@ -282,8 +289,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            findViewById(R.id.confirmation_message).setVisibility(View.GONE);
-            findViewById(R.id.encrypted_message).setVisibility(View.GONE);
+            confirmationMessage.setVisibility(View.GONE);
+            encryptedMessage.setVisibility(View.GONE);
 
             // Set up the crypto object for later. The object will be authenticated by use
             // of the fingerprint.
@@ -321,4 +328,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @OnClick(R.id.proximityButton)
+    public void proximityStuff(){
+        System.out.println("Go to proximity activity");
+        Intent intent = new Intent(this, BeaconActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.recordButton)
+    public void record(){
+        System.out.println("Go to record activity");
+        Intent intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
+    }
 }
