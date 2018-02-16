@@ -1,83 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.capgemini.hackaton.hackaton2018.MainActivity">
+    android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!!!!"
-        android:id="@+id/textView" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
 
-    <TextView
-        android:id="@+id/confirmation_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Body2"
-        android:textColor="?android:attr/colorAccent"
-        android:text="@string/purchase_done"
-        android:visibility="gone"/>
+        <ImageButton
+            android:id="@+id/openDoorButton"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:src="@drawable/open_door"
+            android:padding="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/encrypted_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Body2"
-        android:textColor="?android:attr/colorAccent"
-        android:text="@string/purchase_done"
-        android:visibility="gone"/>
+        <ImageButton
+            android:id="@+id/recordButton"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:src="@drawable/recorder"
+            android:padding="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
-    <Button style="@android:style/Widget.Material.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:textColor="?android:attr/textColorPrimaryInverse"
-        android:text="@string/purchase"
-        android:id="@+id/purchase_button"
-        android:layout_below="@+id/textView"
-        android:layout_toEndOf="@+id/openDoorButton"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="49dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
 
-    <Button
-        android:id="@+id/proximityButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/openDoorButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="This button is cooler" />
+        <ImageButton
+            android:id="@+id/proximityButton"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:src="@drawable/audio_message"
+            android:padding="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/openDoorButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Door"
-        android:layout_marginStart="14dp"
-        android:layout_above="@+id/recordButton"
-        android:layout_alignParentStart="true" />
+        <ImageButton
+            android:id="@+id/purchase_button"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_fp_40px"
+            android:padding="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/recordButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Record message"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/purchase_button"
-        android:layout_marginStart="66dp"
-        android:layout_marginBottom="158dp" />
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <ImageButton
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_fingerprint_error"
+            android:padding="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:src="@drawable/nest"
+            android:padding="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

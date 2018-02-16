@@ -4,6 +4,7 @@ package com.capgemini.hackaton.hackaton2018.fingerprint;
  * Created by MARBEL on 16/02/2018.
  */
 
+import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import com.capgemini.hackaton.hackaton2018.R;
  * A dialog which uses fingerprint APIs to authenticate the user, and falls back to password
  * authentication if fingerprint is not available.
  */
+@TargetApi(23)
 public class FingerprintAuthenticationDialogFragment extends DialogFragment
         implements TextView.OnEditorActionListener, FingerprintUiHelper.Callback {
 

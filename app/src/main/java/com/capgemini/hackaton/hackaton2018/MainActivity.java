@@ -13,11 +13,9 @@ import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.capgemini.hackaton.hackaton2018.fingerprint.FingerprintAuthenticationDialogFragment;
@@ -54,9 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @TargetApi(23)
 public class MainActivity extends AppCompatActivity {
 
-    @Bind(R.id.openDoorButton) Button openDoorButton;
-    @Bind(R.id.purchase_button) Button purchaseButton;
-
+    @Bind(R.id.openDoorButton) ImageButton openDoorButton;
 
     private OpenDoorService openDoorService;
 
@@ -119,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
         }
         createKey(DEFAULT_KEY_NAME, true);
         createKey(KEY_NAME_NOT_INVALIDATED, false);
-        purchaseButton.setEnabled(true);
-        purchaseButton.setOnClickListener(
+        openDoorButton.setEnabled(true);
+        openDoorButton.setOnClickListener(
                 new OpenDoorButtonClickListener(defaultCipher, DEFAULT_KEY_NAME));
 
     }
@@ -134,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
         openDoorService = retrofitDoor.create(OpenDoorService.class);
     }
 
-    @OnClick(R.id.openDoorButton)
-    public void openDoor(){
+//    @OnClick(R.id.openDoorButton)
+    private void openDoor(){
         String username = "test";
         String password = "test";
         Call<DoorProfileDTO> call = openDoorService.open(new DoorDTO(username, password));
@@ -143,17 +139,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<DoorProfileDTO> call, Response<DoorProfileDTO> response) {
-                DoorProfileDTO doorProfileDTO = response.body();
                 if(response.code() == 200) {
-                    Toast.makeText(getApplicationContext(), response.code()+ " Open Door! ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Door is open!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), response.code() + " Open Door failed! ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Door isn't open!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DoorProfileDTO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Open Door failure!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Door is unreachable!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -172,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
     private KeyGenerator mKeyGenerator;
     private SharedPreferences mSharedPreferences;
 
-    @Bind(R.id.confirmation_message) TextView confirmationMessage;
-    @Bind(R.id.encrypted_message) TextView encryptedMessage;
+//    @Bind(R.id.confirmation_message) TextView confirmationMessage;
+//    @Bind(R.id.encrypted_message) TextView encryptedMessage;
 
     /**
      * Initialize the {@link Cipher} instance with the created key in the
@@ -270,11 +265,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Show confirmation, if fingerprint was used show crypto information.
     private void showConfirmation(byte[] encrypted) {
-        confirmationMessage.setVisibility(View.VISIBLE);
-        if (encrypted != null) {
-            encryptedMessage.setVisibility(View.VISIBLE);
-            encryptedMessage.setText(Base64.encodeToString(encrypted, 0 /* flags */));
-        }
+        openDoor();
+//        if (encrypted != null) {
+//            Toast.makeText(this, "Encrypted: " + Base64.encodeToString(encrypted, 0 /* flags */), Toast.LENGTH_LONG).show();
+//        }
     }
 
     private class OpenDoorButtonClickListener implements View.OnClickListener {
@@ -289,9 +283,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            confirmationMessage.setVisibility(View.GONE);
-            encryptedMessage.setVisibility(View.GONE);
-
             // Set up the crypto object for later. The object will be authenticated by use
             // of the fingerprint.
             if (initCipher(mCipher, mKeyName)) {
