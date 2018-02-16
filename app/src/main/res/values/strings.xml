@@ -17,4 +17,9 @@
     <string name="use_fingerprint_to_authenticate_key">use_fingerprint_to_authenticate_key</string>
     <string name="description_fingerprint_icon">Fingerprint icon</string>
     <string name="another_button_has_appeared">Another button has appeared</string>
+
+    <string-array name="locations">
+        <item>Hall</item>
+        <item>Kitchen</item>
+    </string-array>
 </resources>

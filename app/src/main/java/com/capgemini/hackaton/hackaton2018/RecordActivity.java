@@ -10,7 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.capgemini.hackaton.hackaton2018.retrofit.MessageDTO;
@@ -21,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -55,8 +61,11 @@ public class RecordActivity extends AppCompatActivity {
 
     private String fileName;
 
-    private Button playButton;
-    private Button sendButton;
+    @Bind(R.id.playButton) ImageButton playButton;
+    @Bind(R.id.yes_record_sendButton) Button sendButton;
+    @Bind(R.id.no_record_textview) TextView noRecordTextView;
+    @Bind(R.id.yes_record_edittext) EditText receiverId;
+    @Bind(R.id.yes_record_spinner) Spinner location;
 
     private MessagingService messagingService;
 
@@ -76,8 +85,6 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
         initRetrofit();
-        playButton = findViewById(R.id.playButton);
-        sendButton = findViewById(R.id.sendButton);
         ButterKnife.bind(this);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
@@ -94,13 +101,13 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.recordButton)
-    public void record(Button button){
+    public void record(ImageButton button){
         recording = !recording;
         if (recording) {
-            button.setText(STOP_LABEL);
+            button.setImageResource(R.drawable.stop_record);
             startRecord();
         } else {
-            button.setText(RECORD_LABEL);
+            button.setImageResource(R.drawable.start_record);
             stopRecord();
         }
     }
@@ -125,18 +132,21 @@ public class RecordActivity extends AppCompatActivity {
         recorder.stop();
         recorder.release();
         recorder = null;
-        playButton.setEnabled(true);
-        sendButton.setEnabled(true);
+        playButton.setVisibility(View.VISIBLE);
+        noRecordTextView.setVisibility(View.GONE);
+        receiverId.setVisibility(View.VISIBLE);
+        location.setVisibility(View.VISIBLE);
+        sendButton.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.playButton)
-    public void play(Button button){
+    public void play(ImageButton button){
         playing = !playing;
         if (playing) {
-            button.setText(STOP_LABEL);
+             button.setImageResource(R.drawable.stop_music);
             startPlay();
         } else {
-            button.setText(PLAY_LABEL);
+            button.setImageResource(R.drawable.play);
             stopPlay();
         }
     }
@@ -148,7 +158,7 @@ public class RecordActivity extends AppCompatActivity {
             player.setDataSource(fileName);
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
-                    playButton.setText(PLAY_LABEL);
+//                    playButton.setText(PLAY_LABEL);
                     stopPlay();
                 }
             });
@@ -178,7 +188,7 @@ public class RecordActivity extends AppCompatActivity {
         messagingService = retrofitDoor.create(MessagingService.class);
     }
 
-    @OnClick(R.id.sendButton)
+    @OnClick(R.id.yes_record_sendButton)
     public void send(){
         int senderId = 1;
         String senderName = "testSenderName";
@@ -192,7 +202,7 @@ public class RecordActivity extends AppCompatActivity {
             public void onResponse(Call<MessagePushedDTO> call, Response<MessagePushedDTO> response) {
                 MessagePushedDTO messagePushedDTO = response.body();
                 if(response.code() == 200) {
-                    sendButton.setEnabled(false);
+                    //reset view
                     Toast.makeText(getApplicationContext(), response.code()+ "Message pushed!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), response.code() + "Message push failed!", Toast.LENGTH_SHORT).show();
