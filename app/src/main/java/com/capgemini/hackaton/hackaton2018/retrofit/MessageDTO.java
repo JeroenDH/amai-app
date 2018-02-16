@@ -5,7 +5,7 @@ package com.capgemini.hackaton.hackaton2018.retrofit;
  */
 
 public class MessageDTO {
-    private Integer senderid;
+    private Integer senderId;
     private String senderName;
 
     //Base64 encoded sound
@@ -14,12 +14,12 @@ public class MessageDTO {
     //Beacon id
     private String destinationId;
 
-    public Integer getSenderid() {
-        return senderid;
+    public Integer getSenderId() {
+        return senderId;
     }
 
-    public void setSenderid(Integer senderid) {
-        this.senderid = senderid;
+    public void setSenderId(Integer senderId) {
+        this.senderId = senderId;
     }
 
     public String getSenderName() {
@@ -46,8 +46,8 @@ public class MessageDTO {
         this.destinationId = destinationId;
     }
 
-    public MessageDTO(Integer senderid, String senderName, String data, String destinationId) {
-        this.senderid = senderid;
+    public MessageDTO(Integer senderId, String senderName, String data, String destinationId) {
+        this.senderId = senderId;
         this.senderName = senderName;
         this.data = data;
         this.destinationId = destinationId;
