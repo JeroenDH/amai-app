@@ -10,4 +10,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.capgemini.hackaton.hackaton2018.BeaconActivity">
 
+    <Button
+        android:id="@+id/detectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/another_button_has_appeared" />
+
 </RelativeLayout>
+
+

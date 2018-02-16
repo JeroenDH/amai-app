@@ -18,11 +18,19 @@
         android:id="@+id/textView" />
 
     <Button
-        android:text="Button"
+        android:id="@+id/openDoorButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="99dp"
-        android:id="@+id/openDoorButton"
-        android:layout_below="@+id/textView2"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/proximityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/openDoorButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="This button is cooler" />
 </RelativeLayout>

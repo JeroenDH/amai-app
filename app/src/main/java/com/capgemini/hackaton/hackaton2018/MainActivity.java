@@ -1,5 +1,6 @@
 package com.capgemini.hackaton.hackaton2018;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,5 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.proximityButton)
+    public void proximityStuff(){
+        System.out.println("Go to proximity activity");
+        Intent intent = new Intent(this, BeaconActivity.class);
+        startActivity(intent);
+    }
 
 }
