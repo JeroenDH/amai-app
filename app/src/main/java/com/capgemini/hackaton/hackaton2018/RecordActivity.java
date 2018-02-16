@@ -77,6 +77,7 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         initRetrofit();
         playButton = findViewById(R.id.playButton);
+        sendButton = findViewById(R.id.sendButton)
         ButterKnife.bind(this);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
@@ -171,7 +172,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofitDoor = new Retrofit.Builder()
-                .baseUrl("http://192.168.101.127:3000/")
+                .baseUrl("http://192.168.101.155:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         messagingService = retrofitDoor.create(MessagingService.class);
