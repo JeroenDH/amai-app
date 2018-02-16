@@ -77,7 +77,7 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         initRetrofit();
         playButton = findViewById(R.id.playButton);
-        sendButton = findViewById(R.id.sendButton)
+        sendButton = findViewById(R.id.sendButton);
         ButterKnife.bind(this);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
@@ -218,6 +218,6 @@ public class RecordActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG,"Exception while reading message: " + e);
         }
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 }
