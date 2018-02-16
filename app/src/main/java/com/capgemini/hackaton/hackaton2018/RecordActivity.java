@@ -8,14 +8,26 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.capgemini.hackaton.hackaton2018.retrofit.MessageDTO;
+import com.capgemini.hackaton.hackaton2018.retrofit.MessagePushedDTO;
+import com.capgemini.hackaton.hackaton2018.retrofit.MessagingService;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecordActivity extends AppCompatActivity {
     private static final String TAG = RecordActivity.class.getSimpleName();
@@ -44,6 +56,9 @@ public class RecordActivity extends AppCompatActivity {
     private String fileName;
 
     private Button playButton;
+    private Button sendButton;
+
+    private MessagingService messagingService;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -60,12 +75,13 @@ public class RecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+        initRetrofit();
         playButton = findViewById(R.id.playButton);
         ButterKnife.bind(this);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
         fileName = this.getCacheDir().getAbsolutePath();
-        fileName = fileName + "/audiorecordtest.3gp";
+        fileName = fileName + "/audio.amr";
     }
 
     @Override
@@ -91,7 +107,7 @@ public class RecordActivity extends AppCompatActivity {
     private void startRecord(){
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setOutputFile(fileName);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
@@ -109,6 +125,7 @@ public class RecordActivity extends AppCompatActivity {
         recorder.release();
         recorder = null;
         playButton.setEnabled(true);
+        sendButton.setEnabled(true);
     }
 
     @OnClick(R.id.playButton)
@@ -150,5 +167,56 @@ public class RecordActivity extends AppCompatActivity {
             player.release();
             player = null;
         }
+    }
+
+    private void initRetrofit() {
+        Retrofit retrofitDoor = new Retrofit.Builder()
+                .baseUrl("http://192.168.101.127:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        messagingService = retrofitDoor.create(MessagingService.class);
+    }
+
+    @OnClick(R.id.sendButton)
+    public void send(){
+        int senderId = 1;
+        String senderName = "testSenderName";
+        String data = encodeMessage();
+        String destinationId = "testDestinationBeaconId";
+
+        Call<MessagePushedDTO> call = messagingService.push(new MessageDTO(senderId, senderName, data,destinationId));
+        call.enqueue(new Callback<MessagePushedDTO>(){
+
+            @Override
+            public void onResponse(Call<MessagePushedDTO> call, Response<MessagePushedDTO> response) {
+                MessagePushedDTO messagePushedDTO = response.body();
+                if(response.code() == 200) {
+                    sendButton.setEnabled(false);
+                    Toast.makeText(getApplicationContext(), response.code()+ "Message pushed!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.code() + "Message push failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessagePushedDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Failed to call server!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String encodeMessage(){
+        File file = new File(fileName);
+        byte[] bytes = new byte[(int) file.length()];
+        try {
+
+            FileInputStream inputStream = new FileInputStream(file);
+            inputStream.read(bytes);
+            inputStream.close();
+
+        } catch (Exception e) {
+            Log.e(TAG,"Exception while reading message: " + e);
+        }
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 }

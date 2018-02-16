@@ -28,4 +28,13 @@
         android:layout_marginTop="30dp"
         android:enabled="false"
         android:text="Play" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/playButton"
+        android:layout_centerVertical="true"
+        android:enabled="false"
+        android:text="Send" />
 </RelativeLayout>
