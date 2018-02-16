@@ -33,6 +33,11 @@ public class BeaconActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
 
     @OnClick(R.id.detectButton)
     public void detectStuff(){
@@ -58,31 +63,31 @@ public class BeaconActivity extends AppCompatActivity {
                 .build();
 
         this.roomZone = this.proximityObserver.zoneBuilder()
-                .forAttachmentKeyAndValue("room", "hall")
+                .forAttachmentKeyAndValue("enabled", "true")
                 .inNearRange()
                 .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
                     @Override public Unit invoke(ProximityAttachment proximityAttachment) {
-                        Log.d(TAG,"withOnEnterAction");
-                        Toast.makeText(getApplicationContext(), "withOnEnterAction", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG,"withOnEnterAction: " + proximityAttachment.getPayload().get("room"));
+                        Toast.makeText(getApplicationContext(), "Entering " + proximityAttachment.getPayload().get("room"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), proximityAttachment.getPayload().get("message"), Toast.LENGTH_SHORT).show();
                         return null;
                     }
                 })
                 .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
                     @Override
                     public Unit invoke(ProximityAttachment proximityAttachment) {
-                        Log.d(TAG,"withOnExitAction");
-                        Toast.makeText(getApplicationContext(), "withOnExitAction", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG,"withOnExitAction" + proximityAttachment.getPayload().get("room"));
+                        Toast.makeText(getApplicationContext(), "Leaving " + proximityAttachment.getPayload().get("room"), Toast.LENGTH_SHORT).show();
                         return null;
                     }
                 })
                 .withOnChangeAction(new Function1<List<? extends ProximityAttachment>, Unit>() {
                     @Override
                     public Unit invoke(List<? extends ProximityAttachment> proximityAttachments) {
-                        Log.d(TAG, "withOnChangeAction");
-                        Toast.makeText(getApplicationContext(), "withOnChangeAction", Toast.LENGTH_SHORT).show();
                         return null;
                     }
                 })
+
                 .create();
 
         ProximityObserver.Handler observationHandler =
