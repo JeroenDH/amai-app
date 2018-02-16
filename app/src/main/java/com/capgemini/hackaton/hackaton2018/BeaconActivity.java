@@ -24,6 +24,7 @@ public class BeaconActivity extends AppCompatActivity {
     private static final String TAG = BeaconActivity.class.getSimpleName();
     private ProximityZone roomZone;
     private ProximityObserver proximityObserver;
+    private ProximityObserver.Handler observationHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,8 @@ public class BeaconActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        finish();
+        Toast.makeText(getApplicationContext(), "Stop detecting stuff and stuff..", Toast.LENGTH_SHORT).show();
+        observationHandler.stop();
     }
 
     @OnClick(R.id.detectButton)
@@ -90,7 +92,7 @@ public class BeaconActivity extends AppCompatActivity {
 
                 .create();
 
-        ProximityObserver.Handler observationHandler =
+        observationHandler =
                 proximityObserver
                         .addProximityZone(roomZone)
                         .start();
