@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.KeyguardManager;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
+import android.net.Uri;
 import android.os.Build;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.openDoorButton) ImageButton openDoorButton;
+    @Bind(R.id.nestButton) ImageButton nestButton;
 
     private OpenDoorService openDoorService;
 
@@ -130,6 +132,54 @@ public class MainActivity extends AppCompatActivity {
         openDoorService = retrofitDoor.create(OpenDoorService.class);
     }
 
+    @OnClick(R.id.nestButton)
+    public void openNestApp(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.nest.android");
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + "com.nest.android"));
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.hueButton)
+    public void openHueApp(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.philips.lighting.hue");
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + "com.philips.lighting.hue"));
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.plexButton)
+    public void openPlexApp(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.plexapp.android");
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + "com.plexapp.android"));
+            startActivity(intent);
+        }
+    }
+    
 //    @OnClick(R.id.openDoorButton)
     private void openDoor(){
         String username = "test";
