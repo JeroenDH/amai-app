@@ -67,6 +67,7 @@ public class RecordActivity extends AppCompatActivity {
     @Bind(R.id.yes_record_edittext) EditText receiverId;
     @Bind(R.id.yes_record_spinner) Spinner location;
 
+
     private MessagingService messagingService;
 
     @Override
@@ -175,6 +176,7 @@ public class RecordActivity extends AppCompatActivity {
             if (player.isPlaying()) {
                 player.stop();
             }
+            playButton.setImageResource(R.drawable.play);
             player.release();
             player = null;
         }
@@ -182,7 +184,8 @@ public class RecordActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofitDoor = new Retrofit.Builder()
-                .baseUrl("http://192.168.101.155:3000/")
+//                .baseUrl("http://192.168.101.155:3000/")
+                .baseUrl("http://192.168.101.160:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         messagingService = retrofitDoor.create(MessagingService.class);
@@ -190,11 +193,16 @@ public class RecordActivity extends AppCompatActivity {
 
     @OnClick(R.id.yes_record_sendButton)
     public void send(){
+//        int senderId = Integer.parseInt(receiverId.getText().toString());
         int senderId = 1;
         String senderName = "testSenderName";
         String data = encodeMessage();
-        String destinationId = "testDestinationBeaconId";
 
+        String spinnerLocation = location.getSelectedItem().toString();
+        String destinationId = "c15e581c4f861078b8b2b42c32a4b905";
+        if(spinnerLocation == "hall"){
+            destinationId = "d4ed9e691e0382103ed6852d03a4a215";
+        }
         Call<MessagePushedDTO> call = messagingService.push(new MessageDTO(senderId, senderName, data,destinationId));
         call.enqueue(new Callback<MessagePushedDTO>(){
 

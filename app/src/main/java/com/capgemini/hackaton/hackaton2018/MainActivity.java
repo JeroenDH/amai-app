@@ -2,12 +2,13 @@ package com.capgemini.hackaton.hackaton2018;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.KeyguardManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.security.keystore.KeyGenParameterSpec;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initRetrofitOpenDoor();
         initRetrofitPlayMessage();
         ButterKnife.bind(this);
@@ -95,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
     private void initRetrofitPlayMessage() {
         Retrofit retrofitDoor = new Retrofit.Builder()
 //                .baseUrl("http://192.168.101.109:3000/")
-                .baseUrl("http://192.168.101.152:3000/")
+//                .baseUrl("http://192.168.101.152:3000/")
+                .baseUrl("http://192.168.101.160:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         playMessageService = retrofitDoor.create(PlayMessageService.class);
@@ -130,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
     private ProximityObserver.Handler observationHandler;
 
     private void beaconOnStop(){
-        Toast.makeText(getApplicationContext(), "Stop detecting stuff and stuff..", Toast.LENGTH_SHORT).show();
         observationHandler.stop();
     }
 
@@ -157,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
                 .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
                     @Override public Unit invoke(ProximityAttachment proximityAttachment) {
                         Log.d(TAG,"withOnEnterAction: " + proximityAttachment.getPayload().get("room"));
-                        onPlayMessage(proximityAttachment.getDeviceId());
                         Toast.makeText(getApplicationContext(), "Entering " + proximityAttachment.getPayload().get("room"), Toast.LENGTH_SHORT).show();
+                        onPlayMessage(proximityAttachment.getDeviceId());
 //                        Toast.makeText(getApplicationContext(), proximityAttachment.getPayload().get("message"), Toast.LENGTH_SHORT).show();
                         return null;
                     }
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                         .start();
 
         Log.d(TAG,"Initialization ProximitySDK finished");
-        Toast.makeText(getApplicationContext(), "Initialization ProximitySDK finished", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Initialization ProximitySDK finished", Toast.LENGTH_SHORT).show();
 
     }
 
