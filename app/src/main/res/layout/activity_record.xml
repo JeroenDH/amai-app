@@ -21,24 +21,21 @@
             android:text="Record your message"
             android:gravity="center"
             android:textSize="50sp" />
-        <EditText
-            android:id="@+id/yes_record_edittext"
+
+        <Spinner
+            android:id="@+id/yes_record_idspinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Receiver"
             android:layout_margin="30dp"
-            android:layout_marginTop="150dp"
-            android:layout_marginBottom="150dp"
             android:visibility="gone"
-            android:textSize="25sp" />
+            android:textSize="50sp" />
         <Spinner
             android:id="@+id/yes_record_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="30dp"
-            android:entries="@array/locations"
             android:visibility="gone"
             android:textSize="50sp" />
 
@@ -47,8 +44,9 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
+            android:layout_margin="40dp"
             android:visibility="gone"
+            android:textSize="40sp"
             android:text="Send" />
     </LinearLayout>
 

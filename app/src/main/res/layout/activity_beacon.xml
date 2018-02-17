@@ -1,23 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_beacon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.capgemini.hackaton.hackaton2018.BeaconActivity">
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/detectButton"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/t1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/another_button_has_appeared" />
+        android:layout_weight="1"
+        android:text="Hall"
+        android:textSize="50sp" />
+    <LinearLayout
+        android:id="@+id/ll_record_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/ts1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="15/02/2018 15:00 from Jeroen"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/ib1"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"
+            android:layout_weight="6"/>
+        <ImageButton
+            android:id="@+id/ib2"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete"
+            android:layout_weight="6"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_record_11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/ts11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="16/02/2018 21:05 from Karin"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/ib11"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"
+            android:layout_weight="6"/>
+        <ImageButton
+            android:id="@+id/ib12"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete"
+            android:layout_weight="6"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_record_21"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/ts12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="17/02/2018 14:24 from Sergei"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/ib122"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"
+            android:layout_weight="6"/>
+        <ImageButton
+            android:id="@+id/ib222"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete"
+            android:layout_weight="6"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/t2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Kitchen"
+        android:textSize="50sp" />
+    <LinearLayout
+        android:id="@+id/ll_record_13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/ts13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="01/02/2018 04:00 from Marijn"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/ib13"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"
+            android:layout_weight="6"/>
+        <ImageButton
+            android:id="@+id/ib23"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete"
+            android:layout_weight="6"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_record_14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/ts14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="11/02/2018 08:01 from Ankie"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/ib14"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"
+            android:layout_weight="6"/>
+        <ImageButton
+            android:id="@+id/ib24"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete"
+            android:layout_weight="6"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_record_41"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/ts147"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="17/02/2018 12:00 from Jeroen"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/ib146"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"
+            android:layout_weight="6"/>
+        <ImageButton
+            android:id="@+id/ib254"
+            android:padding="5px"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete"
+            android:layout_weight="6"/>
+    </LinearLayout>
 
-</RelativeLayout>
+
+</LinearLayout>
 
 

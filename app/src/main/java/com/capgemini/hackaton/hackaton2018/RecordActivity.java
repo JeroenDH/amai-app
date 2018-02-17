@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -64,7 +65,7 @@ public class RecordActivity extends AppCompatActivity {
     @Bind(R.id.playButton) ImageButton playButton;
     @Bind(R.id.yes_record_sendButton) Button sendButton;
     @Bind(R.id.no_record_textview) TextView noRecordTextView;
-    @Bind(R.id.yes_record_edittext) EditText receiverId;
+    @Bind(R.id.yes_record_idspinner) Spinner receiverId;
     @Bind(R.id.yes_record_spinner) Spinner location;
 
 
@@ -88,6 +89,30 @@ public class RecordActivity extends AppCompatActivity {
         initRetrofit();
         ButterKnife.bind(this);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+
+        String[] PersonsArray = new String[]{
+                "Jeroen",
+                "Marijn",
+                "Karin",
+                "Ankie",
+                "Sergei"
+        };
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                this,R.layout.spinnerview_layout,PersonsArray );
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinnerview_layout);
+        receiverId.setAdapter(spinnerArrayAdapter);
+
+        String[] LocationsArray = new String[]{
+                "Hall",
+                "Kitchen",
+                "Bathroom",
+                "Living"
+        };
+        ArrayAdapter<String> spinnerArrayAdapter2 = new ArrayAdapter<String>(
+                this,R.layout.spinnerview_layout,LocationsArray );
+        spinnerArrayAdapter2.setDropDownViewResource(R.layout.spinnerview_layout);
+
+        location.setAdapter(spinnerArrayAdapter2);
 
         fileName = this.getCacheDir().getAbsolutePath();
         fileName = fileName + "/audio.amr";
@@ -185,7 +210,7 @@ public class RecordActivity extends AppCompatActivity {
     private void initRetrofit() {
         Retrofit retrofitDoor = new Retrofit.Builder()
 //                .baseUrl("http://192.168.101.155:3000/")
-                .baseUrl("http://192.168.101.160:3000/")
+                .baseUrl("http://192.168.101.155:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         messagingService = retrofitDoor.create(MessagingService.class);
@@ -200,9 +225,11 @@ public class RecordActivity extends AppCompatActivity {
 
         String spinnerLocation = location.getSelectedItem().toString();
         String destinationId = "c15e581c4f861078b8b2b42c32a4b905";
-        if(spinnerLocation == "hall"){
+        if(spinnerLocation.toLowerCase().equals("hall")){
             destinationId = "d4ed9e691e0382103ed6852d03a4a215";
         }
+        Log.e(TAG, spinnerLocation.toLowerCase() );
+        Log.e(TAG, destinationId );
         Call<MessagePushedDTO> call = messagingService.push(new MessageDTO(senderId, senderName, data,destinationId));
         call.enqueue(new Callback<MessagePushedDTO>(){
 
@@ -211,9 +238,9 @@ public class RecordActivity extends AppCompatActivity {
                 MessagePushedDTO messagePushedDTO = response.body();
                 if(response.code() == 200) {
                     //reset view
-                    Toast.makeText(getApplicationContext(), response.code()+ "Message pushed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Message pushed!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), response.code() + "Message push failed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),  "Message push failed!", Toast.LENGTH_SHORT).show();
                 }
             }
 

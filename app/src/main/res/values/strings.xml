@@ -22,4 +22,12 @@
         <item>Hall</item>
         <item>Kitchen</item>
     </string-array>
+
+    <string-array name="persons">
+        <item>Jeroen</item>
+        <item>Marijn</item>
+        <item>Karin</item>
+        <item>Ankie</item>
+        <item>Sergei</item>
+    </string-array>
 </resources>

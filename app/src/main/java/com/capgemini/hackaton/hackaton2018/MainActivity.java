@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofitDoor = new Retrofit.Builder()
 //                .baseUrl("http://192.168.101.109:3000/")
 //                .baseUrl("http://192.168.101.152:3000/")
-                .baseUrl("http://192.168.101.160:3000/")
+                .baseUrl("http://192.168.101.155:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         playMessageService = retrofitDoor.create(PlayMessageService.class);
